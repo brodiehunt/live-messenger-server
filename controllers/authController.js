@@ -1,11 +1,14 @@
-const {signinValidation, handleValidation } = require('../utils/formValidations');
+const passport = require('passport');
+const authServices = require('../services/authServices');
+const {signinValidation, registerValidation, handleValidation } = require('../utils/formValidations');
 const { generateToken } = require('../utils/generateJwt');
 
 exports.signin = [
   signinValidation,
   handleValidation,
+  passport.authenticate('local', {session: false}),
   async (req, res, next) => {
-    
+
     const jwt = generateToken(req.user._id);
 
     res.cookie('jwt', jwt, {
@@ -23,7 +26,45 @@ exports.register = [
   registerValidation,
   handleValidation,
   async (req, res, next) => {
+    const {username, email} = req.body;
+    console.log(req.body);
+    try {
+    
+      // Check username is not in use
+      const existingUsername = await authServices.existingUsername(username);
+      // Throw if it is
+      if (existingUsername) {
+        const error = new Error('Username is already in use')
+        error.statusCode = 401;
+        throw error;
+      }
 
+      // Check email is not in use
+      const existingEmail = await authServices.existingEmail(email);
+      // Throw if it is
+      if (existingEmail) {
+        const error = new Error('Email is already in use')
+        error.statusCode = 401;
+        throw error;
+      }
+
+      const newUser = await authServices.createUser(req.body);
+    
+      const jwt = generateToken(newUser._id);
+
+      res.cookie('jwt', jwt, {
+        httpOnly: true
+      })
+
+      res.status(201).json({
+        message: 'Registration successful',
+        data: newUser,
+      })
+
+    } catch (error) {
+      console.log(error);
+      next(error);
+    }
   }
 ];
 

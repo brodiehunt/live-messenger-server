@@ -39,9 +39,10 @@ exports.registerValidation = [
 
 exports.handleValidation = (req, res, next) => {
   const result = validationResult(req);
-
+  console.log(req.body);
+  console.log(result)
   if (result.isEmpty()) {
-    next();
+    return next();
   }
   // result errArr = [[path, msg], [path, msg]]
   const errorsArr = result.errors.map((fieldObj) => {
@@ -51,7 +52,7 @@ exports.handleValidation = (req, res, next) => {
   // result errorsObj = {path: msg, path: msg}
   const errorsObj = Object.fromEntries(errorsArr);
 
-  return res.status(400).json({
+  return res.status(422).json({
     error: errorsObj
   })
 }

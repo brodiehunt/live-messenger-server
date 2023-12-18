@@ -10,7 +10,7 @@ const app = express();
 
 
 app.use(express.json());
-
+app.use(express.urlencoded({extended: true}))
 // more in this
 app.use(cors({
   credentials: true,
@@ -19,7 +19,8 @@ app.use(cors({
 app.use(cookieParser());
 
 // Passport config
-
+require('./config/passport');
+app.use(passport.initialize())
 
 // routes
 
