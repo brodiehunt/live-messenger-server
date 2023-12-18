@@ -27,7 +27,6 @@ exports.register = [
   handleValidation,
   async (req, res, next) => {
     const {username, email} = req.body;
-    console.log(req.body);
     try {
     
       // Check username is not in use
@@ -41,6 +40,7 @@ exports.register = [
 
       // Check email is not in use
       const existingEmail = await authServices.existingEmail(email);
+      console.log(existingEmail);
       // Throw if it is
       if (existingEmail) {
         const error = new Error('Email is already in use')
@@ -62,7 +62,6 @@ exports.register = [
       })
 
     } catch (error) {
-      console.log(error);
       next(error);
     }
   }

@@ -2,10 +2,12 @@ const User = require('../models/User');
 
 exports.existingUsername = async (username) => {
   const user = User.findOne({username});
+  return user;
 }
 
 exports.existingEmail = async (email) => {
   const user = User.findOne({email})
+  return user
 }
 
 exports.createUser = async ({email, name, password, username}) => {

@@ -39,8 +39,7 @@ exports.registerValidation = [
 
 exports.handleValidation = (req, res, next) => {
   const result = validationResult(req);
-  console.log(req.body);
-  console.log(result)
+ 
   if (result.isEmpty()) {
     return next();
   }

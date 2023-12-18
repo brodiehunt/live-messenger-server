@@ -32,6 +32,8 @@ app.get('/', (req, res) => {
   res.send('Hello world!');
 })
 
+const { errorHandler } = require('./middleware/errorHandler')
+app.use(errorHandler);
 
 
 
