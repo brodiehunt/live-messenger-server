@@ -67,3 +67,16 @@ exports.register = [
   }
 ];
 
+exports.googleSuccess = (req, res) => {
+  const jwt = generateToken(req.user._id)
+  const clientRedirectUrl = `http://localhost:5173/auth-callback?user=${encodeURIComponent(JSON.stringify(req.user))}`;
+  res.cookie('jwt', jwt, {
+    httpOnly: true
+  })
+  res.redirect(clientRedirectUrl);
+}
+
+exports.googleFailure = (req, res) => {
+  res.redirect('http://localhost:5173/register?failure=true')
+};
+

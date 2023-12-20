@@ -1,5 +1,7 @@
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
+const JwtStrategy = require('passport-jwt').Strategy;
+const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const User = require('../models/User');
 
 // Local Strategy
@@ -37,3 +39,64 @@ const localVerifyCallback = async (email, password, done) => {
 }
 
 passport.use(new LocalStrategy(localOptions, localVerifyCallback));
+
+// Jwt strategy;
+const cookieExtractor = (req) =>  req?.cookies ? req.cookies['jwt'] : null;
+
+const jwtOpts = {
+  secretOrKey: process.env.JWT_SECRET,
+  jwtFromRequest: cookieExtractor,
+
+}
+
+const jwtVerifyCallback = async (jwt_payload, done) => {
+  try {
+    const user = await User.findOne({id: jwt_payload.sub});
+
+    if (user) {
+      return done(null, user);
+    }
+
+    return done(null, false);
+
+  } catch(error) {
+
+    return done(error, false);
+  }
+}
+
+passport.use(new JwtStrategy(jwtOpts, jwtVerifyCallback));
+
+// Google strategy
+
+const googleOpts = {
+  clientID: process.env.GOOGLE_CLIENT_ID,
+  clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+  callbackURL: 'http://localhost:3000/auth/google/callback'
+}
+
+const googleVerifyCallback = async (accessToken, refreshToken, profile, done) => {
+  // create user here
+  try {
+    // if user exists return the user
+    const user = await User.findOne({ googleId: profile.id });
+
+    if (user) return done(null, user);
+
+    // If the user doesnt exist - create a user
+    const userInfo = {
+      googleId: profile._json.sub,
+      name: profile._json.name,
+      username: profile._json.email,
+      email: profile._json.email,
+      avatarUrl: profile._json.picture
+    }
+    const newUser = await User.create(userInfo);
+    return done(null, newUser);
+  } catch(error) {
+    done(error, null);
+  }
+  
+}
+
+passport.use(new GoogleStrategy(googleOpts, googleVerifyCallback));
