@@ -15,3 +15,8 @@ exports.createUser = async ({email, name, password, username}) => {
 
   return newUser;
 }
+
+exports.findUserFromToken = async (token) => {
+  const user = await User.findOne({'passwordResetToken.token': token});
+  return user;
+}

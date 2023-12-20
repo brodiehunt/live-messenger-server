@@ -130,19 +130,43 @@ exports.passwordRequest = [
     } catch(error) {
       next(error)
     }
-  // validate email
-  // make sure not google account,
-  // generate token, send email to user with token,
-  // add token to the user object
-  // send response
   }
 ];
 
 exports.passwordReset = [
   passwordValidation,
   handleValidation,
-  (req, res) => {
-  // Validate the password.
+  async (req, res, next) => {
+  
+    try {
+      const userFromToken = req.body.token ? await authServices.findUserFromToken(req.body.token): null;
+      console.log(req.body.token);
+      // token provided is asscoiated with any user
+      if (!userFromToken) {
+        const error = new Error('Invalid token');
+        error.statusCode = 404;
+        throw error;
+      }
+
+      // token provided is associated with user but has expired
+      const now = new Date();
+      if (userFromToken && (now > userFromToken.passwordResetToken.expires)) {
+        const error = new Error('Token has expired');
+        error.statusCode = 401;
+        throw error;
+      }
+
+      userFromToken.password = req.body.password;
+      await userFromToken.save();
+
+      return res.status(201).json({
+        message: 'Password successfully reset.'
+      })
+    } catch(error) {
+      next(error)
+    }
+  
+
   // validate the token and expiry
   // update the user password
   // send response to the client.

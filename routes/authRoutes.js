@@ -21,6 +21,6 @@ router.get('/google/failure', authController.googleFailure)
 // Password reset routes
 router.post('/request-reset', authController.passwordRequest);
 
-// router.post('/password-reset', authController.passwordReset);
+router.post('/password-reset', authController.passwordReset);
 
 module.exports = router;
