@@ -80,8 +80,16 @@ const googleVerifyCallback = async (accessToken, refreshToken, profile, done) =>
   try {
     // if user exists return the user
     const user = await User.findOne({ googleId: profile.id });
-
+    
     if (user) return done(null, user);
+
+    // if there is no user, to make sure the email doesn't exist in another account;
+    const existingEmail = await User.findOne({ email: profile._json.email });
+
+    if (existingEmail) {
+      console.log('enter existing email')
+      return done(null, false, { message: 'Email already exists.' })
+    }
 
     // If the user doesnt exist - create a user
     const userInfo = {

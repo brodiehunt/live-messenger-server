@@ -33,8 +33,23 @@ exports.registerValidation = [
     .isLength({min: 6, max: 20})
     .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/)
     .withMessage('Invalid password')
-]
+];
 
+exports.emailValidation = [
+  body('email')
+    .trim()
+    .toLowerCase()
+    .isEmail()
+    .withMessage('Invalid email')
+];
+
+exports.passwordValidation = [
+  body('password')
+    .trim()
+    .isLength({min: 6, max: 20})
+    .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/)
+    .withMessage('Invalid password')
+];
 
 
 exports.handleValidation = (req, res, next) => {

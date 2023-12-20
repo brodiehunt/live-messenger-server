@@ -29,6 +29,14 @@ const UserSchema = new Schema({
     type: String,
     select: false,  // by default will not be returned from queries.
   },
+  passwordResetToken: {
+    expires: {
+      type: Date,
+    },
+    token: {
+      type: String,
+    }
+  },
   accountSettings: {
     isPrivate: {
       type: Boolean,
