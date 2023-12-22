@@ -35,6 +35,21 @@ exports.registerValidation = [
     .withMessage('Invalid password')
 ];
 
+exports.nameValidation = [
+  body('name')
+    .trim()
+    .isLength({min: 3, max: 20})
+    .withMessage('Name must be more than 2 and less than 20 characters')
+]
+
+exports.usernameValidation = [
+  body('username')
+    .trim()
+    .toLowerCase()
+    .isLength({min: 5, max: 15})
+    .withMessage('Invalid Username')
+];
+
 exports.emailValidation = [
   body('email')
     .trim()
@@ -54,7 +69,7 @@ exports.passwordValidation = [
 
 exports.handleValidation = (req, res, next) => {
   const result = validationResult(req);
- 
+  console.log('enter valiation block');
   if (result.isEmpty()) {
     return next();
   }

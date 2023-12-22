@@ -45,6 +45,10 @@ const UserSchema = new Schema({
     allowNonFriendMessages: {
       type: Boolean,
       default: true,
+    },
+    readReceipts : {
+      type: Boolean,
+      default: true
     }
   },
 }, {timestamps: true});

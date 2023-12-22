@@ -51,7 +51,7 @@ const jwtOpts = {
 
 const jwtVerifyCallback = async (jwt_payload, done) => {
   try {
-    const user = await User.findOne({id: jwt_payload.sub});
+    const user = await User.findOne({_id: jwt_payload.sub});
 
     if (user) {
       return done(null, user);
