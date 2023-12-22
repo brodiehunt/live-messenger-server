@@ -93,5 +93,21 @@ exports.updateEmail = [
 
 exports.updateSettings = async (req, res, next) => {
 
+  try {
+    const updatedUser = await updateUser(req, 'accountSettings');
+
+    if (!updatedUser) {
+      const error = new Error('Resource not found');
+      error.statusCode = 404;
+      throw error;
+    }
+
+    res.status(200).json({
+      data: updatedUser,
+      message: 'Successful'
+    })
+  } catch(error) {
+    next(error);
+  }
 }
 

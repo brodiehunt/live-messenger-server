@@ -8,8 +8,13 @@ exports.updateUser = async (req, fieldName) => {
   if (!user) {
    return null;
   }
-  user[fieldName] = req.body[fieldName];
   
+  if (fieldName === 'accountSettings') {
+    user[fieldName] = req.body;
+  } else {
+    user[fieldName] = req.body[fieldName];
+  }
+
   await user.save()
   return user;
 }
