@@ -1,4 +1,4 @@
-const {updateUser} = require('../services/accountServices');
+const {updateUser, getUsersByUsernameSearch } = require('../services/userServices');
 
 const {
   nameValidation,
@@ -6,6 +6,31 @@ const {
   emailValidation,
   handleValidation
 } = require('../utils/formValidations');
+
+exports.getAccount = async (req, res, next) => {
+
+  res.status(200).json({
+    message: 'Successful',
+    data: req.user
+  })
+};
+
+exports.searchUsers = async (req,res, next) => {
+  try {
+    const searchVal = req.query.searchVal;
+    console.log(req.query);
+    console.log('search val', searchVal);
+    const users = await getUsersByUsernameSearch(searchVal);
+    console.log(users);
+    res.status(200).json({
+      message: 'Success',
+      data: users
+    })
+  } catch(error) {
+    next(error);
+  }
+ 
+}
 
 exports.updateName = [
   nameValidation,

@@ -19,3 +19,9 @@ exports.updateUser = async (req, fieldName) => {
   return user;
 }
 
+exports.getUsersByUsernameSearch = async (searchVal) => {
+ 
+  const users = await User.find({ username: { $regex: '^' + searchVal, $options: 'i' }, 'accountSettings.isPrivate': false  })
+  .limit(10);
+  return users;
+}

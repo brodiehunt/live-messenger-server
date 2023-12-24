@@ -26,11 +26,11 @@ app.use(passport.initialize())
 // routes
 
 const authRouter = require('./routes/authRoutes');
-const accountRouter = require('./routes/accountRoutes');
+const userRouter = require('./routes/userRoutes');
 
 app.use('/auth', authRouter);
 
-app.use('/account', passport.authenticate('jwt', {session: false}), accountRouter);
+app.use('/user', passport.authenticate('jwt', {session: false}), userRouter);
 
 app.get('/', (req, res) => {
   res.send('Hello world!');
