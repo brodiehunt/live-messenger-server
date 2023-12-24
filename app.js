@@ -27,10 +27,11 @@ app.use(passport.initialize())
 
 const authRouter = require('./routes/authRoutes');
 const userRouter = require('./routes/userRoutes');
-
+const friendshipRouter = require('./routes/friendRoutes');
 app.use('/auth', authRouter);
 
 app.use('/user', passport.authenticate('jwt', {session: false}), userRouter);
+app.use('/friendships', passport.authenticate('jwt', {session: false}), friendshipRouter);
 
 app.get('/', (req, res) => {
   res.send('Hello world!');
