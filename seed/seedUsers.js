@@ -26,7 +26,7 @@ const seedDB = async () => {
   for (let i = 0; i < 200; i++) {
       const name = faker.person.firstName().slice(0, 10) + i;
       const username = faker.internet.userName({firstName: name}).slice(0,15);
-      const email = faker.internet.email({firstName: name});
+      const email = faker.internet.email({firstName: name}).toLowerCase();
       const password = 'Brodie1';
       const avatarUrl = faker.image.avatarGitHub();
       const user = new User({ name, username, email, password, avatarUrl});

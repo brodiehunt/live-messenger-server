@@ -19,5 +19,6 @@ const FriendshipSchema = new Schema({
   }
 }, {timestamps: true});
 
+FriendshipSchema.index({ users: 1 });
 const Friendship = mongoose.model('Friendship', FriendshipSchema);
 module.exports = Friendship;

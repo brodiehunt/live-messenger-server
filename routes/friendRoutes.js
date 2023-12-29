@@ -19,8 +19,14 @@ router.get('/request/sent', friendshipController.getSentRequests);
 // Get requests sent TO me - get /friendships/requests/incoming
 router.get('/request/recieved', friendshipController.getRecievedRequests);
 
+// Get people you may know
+router.get('/potentialFriends', friendshipController.getPeopleYouMayKnow);
+
+// Get mutual friends
+router.get('/mutualFriends', friendshipController.getMutualFriends);
+
 // Get all friends - GET /friendships
-router.get('/', friendshipController.getAllActivefriendships)
+router.get('/', friendshipController.getAllActiveFriendships)
 // Delete friendship
 
 module.exports = router;

@@ -1,14 +1,15 @@
 const friendshipServices = require('../services/friendshipServices');
 
 // Pull current user id from req.user
-// pull request id from req.query
+// pull request id from req.body
 // create a friendship (statuspending)
 exports.createFriendship = async (req, res, next) => {
   try {
+    
     const requesterId = req.user._id;
-    const recieverId = req.query.id;
+    const recieverId = req.body.id;
     const newFriendship = await friendshipServices.createFriendship(requesterId, recieverId)
-
+    console.log('new friendship', newFriendship);
     res.status(200).json({
       message: 'Success',
       data: newFriendship
@@ -113,4 +114,34 @@ exports.getAllActiveFriendships = async (req, res, next) => {
     next(error);
   }
   
+}
+
+exports.getPeopleYouMayKnow = async (req, res, next) => {
+  try {
+    const userId = req.user._id;
+    const potentialFriends = await friendshipServices.getPotentialFriends(userId);
+
+    res.status(200).json({
+      message: 'Success',
+      data: potentialFriends
+    })
+  } catch(error) {
+    next(error);
+  }
+}
+
+exports.getMutualFriends = async (req, res, next) => {
+  try {
+    const requestingUserId = req.user._id;
+    const friendId = req.query.otherUserId;
+    const mutualFriends = await friendshipServices.getMutualFriends(requestingUserId, friendId);
+
+    res.status(200).json({
+      message: 'Success',
+      data: mutualFriends
+    })
+
+  } catch(error) {
+    next(error);
+  }
 }

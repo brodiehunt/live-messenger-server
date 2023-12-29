@@ -24,6 +24,7 @@ const UserSchema = new Schema({
   },
   avatarUrl: {
     type: String,
+    default: '/user.png'
   },
   password: {
     type: String,
