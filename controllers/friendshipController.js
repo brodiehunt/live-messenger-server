@@ -111,6 +111,7 @@ exports.getAllActiveFriendships = async (req, res, next) => {
     })
       
   } catch (error) {
+    console.log(error);
     next(error);
   }
   
@@ -141,6 +142,22 @@ exports.getMutualFriends = async (req, res, next) => {
       data: mutualFriends
     })
 
+  } catch(error) {
+    next(error);
+  }
+}
+
+exports.deleteFriendWithId = async (req, res, next) => {
+  console.log('enter block')
+  try {
+    const currentUser = req.user._id;
+    const friendToDelete = req.params.friendId;
+    const deleteFriend = await friendshipServices.deleteFriend(currentUser, friendToDelete);
+
+    res.status(200).json({
+      message: 'success',
+      data:  deleteFriend
+    })
   } catch(error) {
     next(error);
   }

@@ -67,9 +67,28 @@ exports.getRecievedRequests = async (userId) => {
 }
 
 exports.getFriendships = async (userId) => {
-  const activeFriendships = await Friendship.find( {users: userId, accepted: true});
 
-  return activeFriendships;
+  const friends = await Friendship.aggregate([
+    { $match: { users: userId, accepted: true }},
+    { $unwind: '$users' },
+    { $match: { users: { $ne: userId }}},
+    { $lookup: {
+      from: 'users',
+      localField: 'users',
+      foreignField: '_id',
+      as: 'user'
+    }},
+    { $unwind: '$user'},
+    { $project: {
+      '_id': '$user._id',
+      'username': '$user.username',
+      'avatarUrl': '$user.avatarUrl'
+    }},
+    { $sort: { username: 1 }},
+  ]).collation({ locale: 'en', caseLevel: true });
+
+  console.log('friends', friends);
+  return friends;
 }
 
 exports.getPotentialFriends = async (userId) => {
@@ -102,8 +121,6 @@ exports.getPotentialFriends = async (userId) => {
     { $unwind: '$userInfo' }
   ]);
 
-  console.log('potentialFriends', potentialFriends);
-
   // array of objects looking like:
   // {
   //   _id: 'ffjf',
@@ -128,6 +145,8 @@ exports.getMutualFriends = async (userId, friendId) => {
   // group by id and count
   // strip all with a count of 1
   // return objects
+
+  // Why do I have to do this? 
   const friendIdObj = new mongoose.Types.ObjectId(friendId)
 
   const mutualFriends = await Friendship.aggregate([
@@ -150,7 +169,16 @@ exports.getMutualFriends = async (userId, friendId) => {
     }}
   ]);
 
-  console.log('mutual friends', mutualFriends)
+  
   return mutualFriends;
 
+}
+
+exports.deleteFriend = async (userId, friendId) => {
+
+  const deletedFriendship = await Friendship.findOneAndDelete({users: {
+    $all: [userId, friendId]
+  }})
+  console.log(deletedFriendship);
+  return deletedFriendship;
 }
