@@ -117,6 +117,21 @@ exports.getAllActiveFriendships = async (req, res, next) => {
   
 }
 
+exports.getFriendsByUsername = async (req, res, next) => {
+  try {
+    const username = req.params.username;
+    const userId = req.user._id;
+    const matchedFriends = await friendshipServices.getFriendsByUsername(userId, username);
+
+    res.status(200).json({
+      message: 'Success',
+      data: matchedFriends
+    });
+  } catch(error) {
+    next(error);
+  }
+}
+
 exports.getPeopleYouMayKnow = async (req, res, next) => {
   try {
     const userId = req.user._id;

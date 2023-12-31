@@ -25,9 +25,16 @@ router.get('/potentialFriends', friendshipController.getPeopleYouMayKnow);
 // Get mutual friends
 router.get('/mutualFriends', friendshipController.getMutualFriends);
 
+// delete friendship by friend id
 router.delete('/:friendId', friendshipController.deleteFriendWithId);
+
+// Get all friends the match username
+router.get('/:username', friendshipController.getFriendsByUsername);
+
 // Get all friends - GET /friendships
 router.get('/', friendshipController.getAllActiveFriendships)
-// Delete friendship
+
+
+
 
 module.exports = router;

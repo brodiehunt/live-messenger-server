@@ -182,3 +182,21 @@ exports.deleteFriend = async (userId, friendId) => {
   console.log(deletedFriendship);
   return deletedFriendship;
 }
+
+exports.getFriendsByUsername = async (userId, username) => {
+  const userFriends = await Friendship.aggregate([
+    { $match: { users: userId }},
+    { $unwind: '$users'},
+    { $match: { users: { $ne: userId} }},
+    { $lookup: {
+      from: 'users',
+      localField: 'users',
+      foreignField: '_id',
+      as: 'user'
+    }},
+    { $unwind: '$user'},
+    { $match: { 'user.username': { $regex: '^' + username, $options: 'i' } } }
+  ])
+
+  return userFriends;
+}
