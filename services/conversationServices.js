@@ -7,6 +7,7 @@ exports.checkExistingConversation = async (userIds) => {
     $all: userIds,
     $size: userIds.length
   }});
+
   return existingConversation;
 }
 
@@ -18,7 +19,12 @@ exports.createConversation = async (userIds, creatorId) => {
   newConversation.readBy = [];
 
   await newConversation.save();
-  return newConversation;
+  
+  const populatedNewConversation = await Conversation.findById(newConversation._id)
+    .select('participants lastMessage updatedAt')
+    .populate('participants', 'username avatarUrl');
+  
+  return populatedNewConversation;
 }
 
 exports.getConversations = async (userId) => {
