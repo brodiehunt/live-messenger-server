@@ -8,6 +8,6 @@ router.put('/name', userController.updateName);
 router.put('/username', userController.updateUsername);
 router.put('/email', userController.updateEmail);
 router.put('/settings', userController.updateSettings);
-
+// router.put('/newRequests', userController.resetRequests);
 
 module.exports = router;

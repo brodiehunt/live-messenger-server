@@ -1,5 +1,6 @@
 const friendshipServices = require('../services/friendshipServices');
-
+const {incrementRequests, resetRequests} = require('../services/userServices')
+const socketService = require('../services/socketServices');
 // Pull current user id from req.user
 // pull request id from req.body
 // create a friendship (statuspending)
@@ -8,11 +9,23 @@ exports.createFriendship = async (req, res, next) => {
     
     const requesterId = req.user._id;
     const recieverId = req.body.id;
-    const newFriendship = await friendshipServices.createFriendship(requesterId, recieverId)
-    console.log('new friendship', newFriendship);
+    const {requestFriendship, notifyUserFriendship} = await friendshipServices.createFriendship(requesterId, recieverId)
+    console.log('request friendship', requestFriendship);
+    console.log('notify friendship', notifyUserFriendship);
+
+    const recipientSocketId = socketService.getUserSocketId(recieverId);
+
+    if (recipientSocketId) {
+      socketService.notifyFriendRequest(notifyUserFriendship, recipientSocketId);
+    } else {
+      // update new requests count on user object
+      await incrementRequests(recieverId);
+    }
+    
+
     res.status(200).json({
       message: 'Success',
-      data: newFriendship
+      data: requestFriendship
     })
 
   } catch(error) {
@@ -31,6 +44,15 @@ exports.acceptFriendship = async (req, res, next) => {
       const error = new Error('Friendship not found');
       error.statusCode = 404;
       throw error;
+    }
+
+    const recipientUser = acceptedFriendship.users.find((user) => user._id !== req.user._id);
+    console.log(recipientUser._id, 'recipent user');
+    console.log(recipientUser._id.toString(), 'recipent user');
+    const recipientSocketId = socketService.getUserSocketId(recipientUser._id);
+
+    if (recipientSocketId) {
+      socketService.notifyAcceptedRequest(acceptedFriendship, recipientSocketId);
     }
 
     res.status(200).json({
@@ -86,6 +108,8 @@ exports.getRecievedRequests = async (req, res, next) => {
   try {
     const userId = req.user._id;
     const recievedRequests = await friendshipServices.getRecievedRequests(userId);
+
+    await resetRequests(userId);
 
     res.status(200).json({
       message: 'Success',

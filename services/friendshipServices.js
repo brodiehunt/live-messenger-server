@@ -10,17 +10,24 @@ exports.createFriendship = async (requesterId, recieverId) => {
   
   const refetchedFriendship = await Friendship.findById(newFriendship._id).populate('users');
 
-  const transformedFriendship = {
+  const requestFriendship = {
     _id: refetchedFriendship._id,
     accepted: refetchedFriendship.accepted,
     userDetails: refetchedFriendship.users.find((user) => user._id.toString() !== requesterId.toString())
   }
 
-  return transformedFriendship;
+  const notifyUserFriendship = {
+    _id: refetchedFriendship._id,
+    accepted: refetchedFriendship.accepted,
+    userDetails: refetchedFriendship.users.find((user) => user._id.toString() === requesterId.toString())
+  }
+
+  return {requestFriendship, notifyUserFriendship};
 }
 
 exports.acceptRequest = async (friendshipId) => {
-  const friendship = await Friendship.findById(friendshipId);
+  const friendship = await Friendship.findById(friendshipId)
+    .populate('users', 'username');
   friendship.accepted = true;
   await friendship.save();
   return friendship;

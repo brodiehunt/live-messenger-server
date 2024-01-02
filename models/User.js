@@ -52,6 +52,11 @@ const UserSchema = new Schema({
       default: true
     }
   },
+  newRequests: {
+    type: Number,
+    default: 0,
+    required: true
+  }
 }, {timestamps: true});
 
 
