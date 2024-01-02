@@ -54,11 +54,13 @@ exports.addMessage = async (conversationId, userId, username, message) => {
   newMessage.messageType = 'text';
   await newMessage.save();
 
-  const conversation = await Conversation.findById(conversationId);
+  const conversation = await Conversation.findById(conversationId)
+    .select('participants messages lastMessage updatedAt readBy')
+    .populate('participants', 'username avatarUrl');
   conversation.lastMessage = newMessage;
-  conversation.readBy = [];
+  conversation.readBy = [{ userId, username }];
   conversation.messages.push(newMessage._id);
   await conversation.save();
 
-  return newMessage;
+  return {newMessage, conversation};
 }

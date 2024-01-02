@@ -1,4 +1,5 @@
 const conversationServices = require('../services/conversationServices')
+const socketService = require('../services/socketServices');
 
 exports.createConversation = async (req, res, next) => {
 
@@ -76,11 +77,27 @@ exports.addMessage = async (req, res, next) => {
   const username = req.user.username;
 
   try {
-    const newMessage = await conversationServices.addMessage(conversationId, userId, username, messageData)
+    const {newMessage, conversation} = await conversationServices.addMessage(conversationId, userId, username, messageData)
 
+    const conversationUsers = conversation.participants.filter((participant) => {
+      return participant._id !== userId;
+    })
+
+    const convUserIds = conversationUsers.map((user) => {
+      return user._id;
+    })
+
+    convUserIds.forEach((userId) => {
+      const socketId = socketService.getUserSocketId(userId);
+      if (socketId) {
+        socketService.pushNewestMessage(conversation, socketId);
+      }
+    })
+
+    
     res.status(201).json({
       message: 'Success',
-      data: newMessage
+      data: conversation,
     })
   } catch(error) {
     next(error);

@@ -42,6 +42,10 @@ exports.notifyFriendRequest = (friendship, recipientSocketId) => {
   
 }
 
+exports.pushNewestMessage = (conversation, recipientSocketId) => {
+  io.to(recipientSocketId).emit('newMessage', conversation);
+}
+
 exports.getUserSocketId = (userId) => {
   return userSocketMap[userId]
 }
