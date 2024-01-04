@@ -22,6 +22,9 @@ exports.signin = [
 
     res.cookie('jwt', jwt, {
       httpOnly: true, 
+      secure: true, // Ensures the cookie is only sent over HTTPS
+      sameSite: 'None', // Necessary for cross-site/cross-origin requests
+      path: '/'
     });
 
     res.status(200).json({
@@ -62,7 +65,10 @@ exports.register = [
       const jwt = generateJWT(newUser._id);
 
       res.cookie('jwt', jwt, {
-        httpOnly: true
+        httpOnly: true,
+        secure: true, // Ensures the cookie is only sent over HTTPS
+        sameSite: 'None', // Necessary for cross-site/cross-origin requests
+        path: '/'
       })
 
       res.status(201).json({
