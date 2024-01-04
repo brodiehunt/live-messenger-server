@@ -41,11 +41,11 @@ const localVerifyCallback = async (email, password, done) => {
 passport.use(new LocalStrategy(localOptions, localVerifyCallback));
 
 // Jwt strategy;
-const cookieExtractor = (req) =>  req?.cookies ? req.cookies['jwt'] : null;
+
 
 const jwtOpts = {
   secretOrKey: process.env.JWT_SECRET,
-  jwtFromRequest: cookieExtractor,
+  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
 
 }
 

@@ -20,16 +20,10 @@ exports.signin = [
 
     const jwt = generateJWT(req.user._id);
 
-    res.cookie('jwt', jwt, {
-      httpOnly: true, 
-      secure: true, // Ensures the cookie is only sent over HTTPS
-      sameSite: 'None', // Necessary for cross-site/cross-origin requests
-      path: '/'
-    });
-
     res.status(200).json({
       message: 'Successful login',
-      data: req.user
+      data: req.user,
+      jwt: jwt,
     });
   }
 ];
@@ -64,16 +58,10 @@ exports.register = [
     
       const jwt = generateJWT(newUser._id);
 
-      res.cookie('jwt', jwt, {
-        httpOnly: true,
-        secure: true, // Ensures the cookie is only sent over HTTPS
-        sameSite: 'None', // Necessary for cross-site/cross-origin requests
-        path: '/'
-      })
-
       res.status(201).json({
         message: 'Registration successful',
         data: newUser,
+        jwt: jwt
       })
 
     } catch (error) {
@@ -86,9 +74,7 @@ exports.googleSuccess = (req, res) => {
   const jwt = generateJWT(req.user._id)
   const baseUrl = process.env.CLIENT_URL;
   const clientRedirectUrl = `${baseUrl}/auth-callback?user=${encodeURIComponent(JSON.stringify(req.user))}`;
-  res.cookie('jwt', jwt, {
-    httpOnly: true
-  })
+  // Handle sending token here ! not implemented yet.
   res.redirect(clientRedirectUrl);
 }
 
