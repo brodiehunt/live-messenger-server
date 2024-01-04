@@ -15,6 +15,6 @@ router.get('/:conversationId', conversationController.getConversation)
 // Add message to conversation
 router.post('/:conversationId/message', conversationController.addMessage)
 
-
+router.put('/:conversationId/read', conversationController.updateReadBy);
 
 module.exports = router;

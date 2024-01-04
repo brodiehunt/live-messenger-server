@@ -29,7 +29,7 @@ exports.createConversation = async (userIds, creatorId) => {
 
 exports.getConversations = async (userId) => {
   const conversations = await Conversation.find({participants: userId}).
-    select('participants lastMessage updatedAt').
+    select('participants lastMessage updatedAt readBy').
     populate('participants', 'username avatarUrl')
     .sort({updatedAt: -1})
 
@@ -43,6 +43,12 @@ exports.getConversation = async (conversationId) => {
 
   return conversation;
 };
+
+exports.updateReadBy = async (conversationDoc, userObj) => {
+  conversationDoc.readBy.push(userObj);
+  await conversationDoc.save();
+  return conversationDoc;
+}
 
 exports.addMessage = async (conversationId, userId, username, message) => {
   // Create a message using the userId username,

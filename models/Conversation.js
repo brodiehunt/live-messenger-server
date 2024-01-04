@@ -37,7 +37,7 @@ const ConversationSchema = new Schema({
       username: {
         type: String,
         required: true
-      }
+      },
     }
   ]
 }, {timestamps: true});

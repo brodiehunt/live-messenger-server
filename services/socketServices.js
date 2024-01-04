@@ -39,11 +39,14 @@ exports.notifyFriendRequest = (friendship, recipientSocketId) => {
   
   io.to(recipientSocketId).emit('newRequest', friendship)
   
-  
 }
 
 exports.pushNewestMessage = (conversation, recipientSocketId) => {
   io.to(recipientSocketId).emit('newMessage', conversation);
+}
+
+exports.pushUpdatedReadBy = (readBy, recipientSocketId) => {
+  io.to(recipientSocketId).emit('read', readBy);
 }
 
 exports.getUserSocketId = (userId) => {

@@ -2,8 +2,7 @@ const mongoose = require('mongoose');
 
 
 async function connectDB() {
-  console.log(process.env.DEV_DB);
-  console.log(process.env.NODE_ENV)
+  
   let mongoDBURI = process.env.NODE_ENV == 'development' ? process.env.DEV_DB : process.env.PROD_DB;
 
   // Shut down server if no mongoDBURI is configured in dotenv file.
