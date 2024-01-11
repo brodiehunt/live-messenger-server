@@ -12,10 +12,7 @@ app.use(express.urlencoded({ extended: true }));
 // more in this
 app.use(
   cors({
-    origin: (origin, callback) => {
-      console.log(process.env.CLIENT_URL);
-      console.log(origin);
-    },
+    origin: process.env.CLIENT_URL,
     credentials: true,
   })
 );
