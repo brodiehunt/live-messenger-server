@@ -47,7 +47,7 @@ exports.register = [
 
       // Check email is not in use
       const existingEmail = await authServices.existingEmail(email);
-      console.log(existingEmail);
+
       // Throw if it is
       if (existingEmail) {
         const error = new Error("Email is already in use");

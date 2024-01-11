@@ -56,7 +56,6 @@ exports.passwordValidation = [
 
 exports.handleValidation = (req, res, next) => {
   const result = validationResult(req);
-  console.log("enter valiation block");
   if (result.isEmpty()) {
     return next();
   }

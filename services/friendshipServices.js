@@ -119,7 +119,6 @@ exports.getFriendships = async (userId) => {
     { $sort: { username: 1 } },
   ]).collation({ locale: "en", caseLevel: true });
 
-  console.log("friends", friends);
   return friends;
 };
 
@@ -216,7 +215,7 @@ exports.deleteFriend = async (userId, friendId) => {
       $all: [userId, friendId],
     },
   });
-  console.log(deletedFriendship);
+
   return deletedFriendship;
 };
 

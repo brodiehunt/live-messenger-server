@@ -155,18 +155,15 @@ exports.addMessage = async (req, res, next) => {
     // Get all other participants to the conversation
     const conversationUsers = conversation.participants.filter(
       (participant) => {
-        return participant._id !== userId;
+        return participant._id.toString() !== userId.toString();
       }
     );
 
-    // THIS STEP IS REDUNDANT. RUN FOR EACH ON CONVERSATION USERS INSTEAD
-    const convUserIds = conversationUsers.map((user) => {
-      return user._id;
-    });
+    // console.log(throwerrorhere);
 
     // send updated conversation to the participants who are online.
-    convUserIds.forEach((userId) => {
-      const socketId = socketService.getUserSocketId(userId);
+    conversationUsers.forEach((user) => {
+      const socketId = socketService.getUserSocketId(user._id);
       if (socketId) {
         socketService.pushNewestMessage(conversation, socketId);
       }
