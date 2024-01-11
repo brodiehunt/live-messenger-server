@@ -1,9 +1,10 @@
-const mongoose = require('mongoose');
-
+const mongoose = require("mongoose");
 
 async function connectDB() {
-  
-  let mongoDBURI = process.env.NODE_ENV == 'development' ? process.env.DEV_DB : process.env.PROD_DB;
+  let mongoDBURI =
+    process.env.NODE_ENV == "development"
+      ? process.env.DEV_DB
+      : process.env.PROD_DB;
 
   // Shut down server if no mongoDBURI is configured in dotenv file.
   if (!mongoDBURI) {
@@ -11,9 +12,9 @@ async function connectDB() {
     process.exit(1);
   }
 
-  await mongoose.connect(mongoDBURI)
+  await mongoose.connect(mongoDBURI);
 }
 
 connectDB()
-  .then(() => console.log('successsfully connected to the db'))
-  .catch(error => console.log(error));
+  .then(() => console.log("successfully connected to the db"))
+  .catch((error) => console.error(error, "Could not connect to the db"));
