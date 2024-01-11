@@ -30,7 +30,7 @@ exports.createConversation = async (userIds, creatorId) => {
   const populatedNewConversation = await Conversation.findById(
     newConversation._id
   )
-    .select("participants lastMessage updatedAt") // readBy array should be included ?
+    .select("participants lastMessage updatedAt readBy")
     .populate("participants", "username avatarUrl");
 
   return populatedNewConversation;
