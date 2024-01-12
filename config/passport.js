@@ -70,7 +70,8 @@ passport.use(new JwtStrategy(jwtOpts, jwtVerifyCallback));
 const googleOpts = {
   clientID: process.env.GOOGLE_CLIENT_ID,
   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-  callbackURL: "http://localhost:3000/auth/google/callback",
+  callbackURL:
+    "https://dry-dawn-45381-b3754b022e57.herokuapp.com/auth/google/callback",
 };
 
 const googleVerifyCallback = async (
