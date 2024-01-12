@@ -77,7 +77,7 @@ exports.googleSuccess = (req, res) => {
   const baseUrl = process.env.CLIENT_URL;
   const clientRedirectUrl = `${baseUrl}/auth-callback?user=${encodeURIComponent(
     JSON.stringify(req.user)
-  )}`;
+  )}&jwt=${jwt}`;
   // Handle sending token here ! not implemented yet.
   res.redirect(clientRedirectUrl);
 };
