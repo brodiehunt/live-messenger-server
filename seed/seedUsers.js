@@ -5,7 +5,7 @@ const mongoose = require("mongoose");
 require("dotenv").config();
 
 const connectToDB = async () => {
-  await mongoose.connect(process.env.DEV_DB);
+  await mongoose.connect(process.env.PROD_DB);
   console.log("connected to db");
 };
 
