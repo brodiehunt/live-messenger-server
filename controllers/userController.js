@@ -21,8 +21,9 @@ exports.getAccount = async (req, res, next) => {
 // Search for all users based on a search val (matches against username field)
 exports.searchUsers = async (req, res, next) => {
   try {
+    const searchId = req.user._id;
     const searchVal = req.query.searchVal;
-    const users = await getUsersByUsernameSearch(searchVal);
+    const users = await getUsersByUsernameSearch(searchVal, searchId);
 
     res.status(200).json({
       message: "Success",
