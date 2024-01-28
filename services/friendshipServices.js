@@ -124,13 +124,14 @@ exports.getFriendships = async (userId) => {
 
 exports.getPotentialFriends = async (userId) => {
   // Get a unique list of friend ids (user included)
-  const userFriends = await Friendship.find({ users: userId }).distinct(
-    "users"
-  );
+  const userFriends = await Friendship.find({
+    users: userId,
+    accepted: true,
+  }).distinct("users");
 
   // Filter request user from list
   const friendIds = userFriends.filter((id) => {
-    return id !== userId;
+    return id.toString() !== userId.toString();
   });
 
   // From this list of ids. find all friendships stemming from the list.
@@ -138,9 +139,9 @@ exports.getPotentialFriends = async (userId) => {
   // group based on user id, create mutual field as the sum,
   // sort in ascending order (highest mutual friends first)
   const potentialFriends = await Friendship.aggregate([
-    { $match: { users: { $in: friendIds } } },
+    { $match: { users: { $in: friendIds }, accepted: true } },
     { $unwind: "$users" },
-    { $match: { users: { $ne: userId, $nin: friendIds } } },
+    { $match: { users: { $nin: [userId, ...friendIds] } } },
     { $group: { _id: "$users", mutualFriendsCount: { $sum: 1 } } },
     { $sort: { mutualFriendsCount: -1 } },
     { $limit: 20 },
@@ -167,7 +168,7 @@ exports.getPotentialFriends = async (userId) => {
   const nonPrivateUsers = potentialFriends.filter((friend) => {
     return !friend.userInfo.accountSettings.isPrivate;
   });
-
+  console.log(nonPrivateUsers);
   return nonPrivateUsers;
 };
 
@@ -183,7 +184,7 @@ exports.getMutualFriends = async (userId, friendId) => {
   const friendIdObj = new mongoose.Types.ObjectId(friendId);
 
   const mutualFriends = await Friendship.aggregate([
-    { $match: { users: { $in: [userId, friendIdObj] } } },
+    { $match: { users: { $in: [userId, friendIdObj] }, accepted: true } },
     { $unwind: "$users" },
     { $match: { users: { $nin: [userId, friendIdObj] } } },
     { $group: { _id: "$users", mutualFriendCount: { $sum: 1 } } },
@@ -205,7 +206,7 @@ exports.getMutualFriends = async (userId, friendId) => {
       },
     },
   ]);
-
+  console.log(mutualFriends);
   return mutualFriends;
 };
 
